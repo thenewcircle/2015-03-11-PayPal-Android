@@ -40,4 +40,22 @@
         app:showAsAction="never"
         android:title="Explicit"/>
 
+    <item
+        android:id="@+id/action_alarm"
+        android:orderInCategory="10"
+        app:showAsAction="never"
+        android:title="Alarm"/>
+
+    <item
+        android:id="@+id/action_photo"
+        android:orderInCategory="10"
+        app:showAsAction="never"
+        android:title="Photo"/>
+
+    <item
+        android:id="@+id/action_contact"
+        android:orderInCategory="10"
+        app:showAsAction="never"
+        android:title="Contact"/>
+
 </menu>
