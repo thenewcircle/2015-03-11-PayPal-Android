@@ -1,0 +1,43 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".HelloActivity">
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_implicit_main"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Implicit Main"/>
+
+    <item
+        android:id="@+id/action_implicit_calculator"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Implicit Calculator"/>
+
+    <item
+        android:id="@+id/action_new_task"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="New Task"/>
+
+    <item
+        android:id="@+id/action_browser"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Browser"/>
+
+    <item
+        android:id="@+id/action_implicit_custom"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Implicit Custom"/>
+
+    <item
+        android:id="@+id/action_explicit"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="Explicit"/>
+
+</menu>
