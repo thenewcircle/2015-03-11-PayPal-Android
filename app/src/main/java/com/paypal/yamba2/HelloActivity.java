@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.AlarmClock;
 import android.provider.ContactsContract;
@@ -97,25 +98,27 @@ public class HelloActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        Thread t = new Thread() {
-          public void run() {
-              try {
-                  YambaClient cloud = new YambaClient("student", "password",
-                          "http://yamba.thenewcircle.com/api");
-                  cloud.postStatus(msg);
-              } catch (YambaClientException e) {
-                  Log.d("HelloActivity", "Exception posting status", e);
-              }
-              Runnable doAfter = new Runnable() {
-                  @Override
-                  public void run() {
-                      Toast.makeText(HelloActivity.this, "Posted: "+msg, Toast.LENGTH_LONG).show();
-                  }
-              };
-              HelloActivity.this.runOnUiThread(doAfter);
-          }
+        AsyncTask<String, Void, String> task = new AsyncTask<String, Void, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                String msg = params[0];
+                try {
+                    YambaClient cloud = new YambaClient("student", "password",
+                            "http://yamba.thenewcircle.com/api");
+                    cloud.postStatus(msg);
+                } catch (YambaClientException e) {
+                    Log.d("HelloActivity", "Exception posting status", e);
+                }
+                return "Posted: " + msg;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                super.onPostExecute(result);
+                Toast.makeText(HelloActivity.this, result, Toast.LENGTH_LONG).show();
+            }
         };
-        t.start();
+        task.execute(msg);
     }
 
 
