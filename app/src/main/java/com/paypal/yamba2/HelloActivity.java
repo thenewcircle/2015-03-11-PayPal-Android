@@ -1,7 +1,10 @@
 package com.paypal.yamba2;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -44,6 +47,8 @@ public class HelloActivity extends ActionBarActivity {
     private EditText personNameEditText;
     private Button helloButton;
     private ImageView imageView;
+    private BroadcastReceiver receiver;
+    private IntentFilter filter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,28 @@ public class HelloActivity extends ActionBarActivity {
                 onHelloButtonPressed();
             }
         });
+
+        filter = new IntentFilter("com.paypal.yamba.TweetSuccessful");
+        receiver = new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String msg = intent.getStringExtra("com.paypal.MSG");
+                Toast.makeText(HelloActivity.this, "FOO: " + msg, Toast.LENGTH_LONG).show();
+            }
+        };
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        this.unregisterReceiver(receiver);
     }
 
     public void fileIO() {
@@ -118,7 +145,8 @@ public class HelloActivity extends ActionBarActivity {
                 Toast.makeText(HelloActivity.this, result, Toast.LENGTH_LONG).show();
             }
         };
-        task.execute(msg);
+//        task.execute(msg);
+        MyIntentService.startActionChirp(this, msg);
     }
 
 
