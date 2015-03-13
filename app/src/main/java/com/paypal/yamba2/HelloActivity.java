@@ -92,7 +92,7 @@ public class HelloActivity extends ActionBarActivity {
         helloTextView.setText(msg);
 
         try {
-            Thread.sleep(60000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -106,6 +106,13 @@ public class HelloActivity extends ActionBarActivity {
               } catch (YambaClientException e) {
                   Log.d("HelloActivity", "Exception posting status", e);
               }
+              Runnable doAfter = new Runnable() {
+                  @Override
+                  public void run() {
+                      Toast.makeText(HelloActivity.this, "Posted: "+msg, Toast.LENGTH_LONG).show();
+                  }
+              };
+              HelloActivity.this.runOnUiThread(doAfter);
           }
         };
         t.start();
