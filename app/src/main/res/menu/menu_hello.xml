@@ -52,10 +52,15 @@
         app:showAsAction="never"
         android:title="Photo"/>
 
+
     <item
         android:id="@+id/action_contact"
         android:orderInCategory="10"
         app:showAsAction="never"
         android:title="Contact"/>
-
+    <item
+        android:id="@+id/action_files"
+        android:orderInCategory="9"
+        app:showAsAction="never"
+        android:title="FileIO"/>
 </menu>

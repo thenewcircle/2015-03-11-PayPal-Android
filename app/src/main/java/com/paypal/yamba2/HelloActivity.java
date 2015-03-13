@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.thenewcircle.yamba.client.YambaClient;
+import com.thenewcircle.yamba.client.YambaClientException;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URI;
 
 
@@ -45,14 +55,60 @@ public class HelloActivity extends ActionBarActivity {
         helloButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = personNameEditText.getText().toString();
-                if (TextUtils.isEmpty(name)) {
-                    name = "World";
-                }
-                String msg = String.format("Hello %s!", name);
-                helloTextView.setText(msg);
+                onHelloButtonPressed();
             }
         });
+    }
+
+    public void fileIO() {
+        File homeDir = getFilesDir();
+        File dataFile = new File(homeDir, "myData.txt");
+        Toast.makeText(this, dataFile.toString(), Toast.LENGTH_LONG).show();
+        try {
+            PrintWriter out = new PrintWriter(dataFile);
+            out.println("Hello Lalitha");
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            FileReader in = new FileReader(dataFile);
+            BufferedReader in2 = new BufferedReader(in);
+            String line = in2.readLine();
+            in2.close();
+            Toast.makeText(this, line, Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onHelloButtonPressed() {
+        String name = personNameEditText.getText().toString();
+        if (TextUtils.isEmpty(name)) {
+            name = "World";
+        }
+        final String msg = String.format("Hello %s!", name);
+        Log.d("HelloActivity", msg);
+        helloTextView.setText(msg);
+
+        try {
+            Thread.sleep(60000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Thread t = new Thread() {
+          public void run() {
+              try {
+                  YambaClient cloud = new YambaClient("student", "password",
+                          "http://yamba.thenewcircle.com/api");
+                  cloud.postStatus(msg);
+              } catch (YambaClientException e) {
+                  Log.d("HelloActivity", "Exception posting status", e);
+              }
+          }
+        };
+        t.start();
     }
 
 
@@ -106,16 +162,16 @@ public class HelloActivity extends ActionBarActivity {
             return true;
         } else if (id == R.id.action_photo) {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            Uri homeDir = Uri.fromFile(getFilesDir());
-            Uri sdCard = Uri.fromFile(getExternalFilesDir(Environment.DIRECTORY_PICTURES));
-            Uri photoLocation = Uri.withAppendedPath(sdCard, "photo.jpg");
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoLocation);
+//          intent.putExtra(MediaStore.EXTRA_OUTPUT, photoLocation);
             startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
             return true;
         } else if (id == R.id.action_contact) {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
             startActivityForResult(intent, REQUEST_CONTACT);
+            return true;
+        } else if (id == R.id.action_files) {
+            fileIO();
             return true;
         }
 
@@ -134,7 +190,7 @@ public class HelloActivity extends ActionBarActivity {
                     null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 String name = cursor.getString(0);
-                helloTextView.setText(name);
+                personNameEditText.setText(name);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
